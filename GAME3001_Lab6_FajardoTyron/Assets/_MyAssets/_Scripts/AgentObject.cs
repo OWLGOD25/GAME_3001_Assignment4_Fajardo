@@ -52,17 +52,7 @@ public class AgentObject : MonoBehaviour
         }
         return false;
     }
-    public void TakeDamage(int damage)
-    {
 
-        hitPoints -= damage;
-        if (hitPoints <= 0)
-        {
-            if (explosionPrefab) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            if (explosionSound) AudioSource.PlayClipAtPoint(explosionSound, transform.position);
-            Destroy(gameObject);
-        }
-    }
 }
 public class EnemyDetector : MonoBehaviour
 {

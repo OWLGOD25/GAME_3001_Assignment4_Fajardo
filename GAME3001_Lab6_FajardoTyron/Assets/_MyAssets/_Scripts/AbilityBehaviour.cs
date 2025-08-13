@@ -3,7 +3,88 @@ using UnityEngine;
 using System.Collections;
 public abstract class AbilityBehaviour : MonoBehaviour
 {
-    
+
+}
+
+public class ShieldAbility : AbilityBehaviour
+{
+    [Header("ShieldAbility")]
+    [SerializeField] public GameObject shieldPrefab;
+    public float shieldDuration = 3f;
+    public float shieldCooldown = 5f;
+    public bool shieldActive = false;
+    public bool shieldOnCooldown = false;
+
+    public IEnumerator ActivateShield()
+    {
+        shieldOnCooldown = true;
+        shieldActive = true;
+
+        // Enable the shield visual
+        if (shieldPrefab != null)
+            shieldPrefab.SetActive(true);
+
+        // Wait for shield duration
+        yield return new WaitForSeconds(shieldDuration);
+
+        shieldActive = false;
+
+        // Disable the shield visual
+        if (shieldPrefab != null)
+            shieldPrefab.SetActive(false);
+
+        // Wait for cooldown before allowing reuse
+        yield return new WaitForSeconds(shieldCooldown);
+        shieldOnCooldown = false;
+    }
+
+}
+
+public class EMPAbility : AbilityBehaviour
+{
+    public float empRadius = 5f;
+    public float empCooldown = 10f;
+    public float empDuration = 3f; // Duration for which electronics are disabled
+    public GameObject empEffectPrefab;
+
+    private bool onCooldown = false;
+
+    public System.Action DisableElectronics;
+
+    public string TriggerEMP()
+    {
+        if (onCooldown)
+            StartCoroutine(DoEMP());
+
+        return "EMP Triggered";
+    }
+
+    private IEnumerator DoEMP()
+    {
+        // Show EMP effect
+        if (empEffectPrefab != null)
+            Instantiate(empEffectPrefab, transform.position, Quaternion.identity);
+
+        // Disable detectors within radius
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, empRadius);
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("EnemyDetector"))
+            {
+                var detector = hit.GetComponent<EnemyDetector>();
+                if (detector != null)
+                    detector.DisableForSeconds(3f); // Jam time, can be exposed
+            }
+
+        }
+
+        DisableElectronics?.Invoke();
+
+        onCooldown = true;
+        yield return new WaitForSeconds(empCooldown);
+        onCooldown = false;
+
+    }
 }
 
 public class MovementAbility : AbilityBehaviour
@@ -75,93 +156,6 @@ public class ProjectileAbility : AbilityBehaviour
     private bool canFire;
 
 
-    public class ShieldAbility : AbilityBehaviour
-    {
-        [Header("ShieldAbility")]
-        public GameObject shieldPrefab;
-        public float shieldDuration = 3f;
-        public float shieldCooldown = 5f;
-        private bool shieldActive = false;
-        private bool shieldOnCooldown = false;
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.E) && !shieldOnCooldown)
-            {
-                ActivateShield();
-            }
-        }
-        private void ActivateShield()
-        {
-            if (!shieldActive)
-            {
-                Instantiate(shieldPrefab, transform.position, Quaternion.identity, transform);
-                shieldActive = true;
-                Invoke("DeactivateShield", shieldDuration);
-                shieldOnCooldown = true;
-                Invoke("ResetShieldCooldown", shieldCooldown);
-            }
-        }
-        private void DeactivateShield()
-        {
-            shieldActive = false;
-            // Additional logic to remove the shield visual can be added here.
-        }
-        private void ResetShieldCooldown()
-        {
-            shieldOnCooldown = false;
-        }
-    }
-
-    public class EMPAbility : MonoBehaviour
-    {
-        public float empRadius = 5f;
-        public float empCooldown = 10f;
-        public GameObject empEffectPrefab;
-
-        private bool onCooldown = false;
-
-        public System.Action DisableElectronics;
-
-        public void TriggerEMP()
-        {
-            if (onCooldown) return;
-            StartCoroutine(DoEMP());
-        }
-
-        private IEnumerator DoEMP()
-        {
-            // Show EMP effect
-            if (empEffectPrefab != null)
-                Instantiate(empEffectPrefab, transform.position, Quaternion.identity);
-
-            // Disable detectors within radius
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, empRadius);
-            foreach (var hit in hits)
-            {
-                if (hit.CompareTag("EnemyDetector"))
-                {
-                    var detector = hit.GetComponent<EnemyDetector>();
-                    if (detector != null)
-                        detector.DisableForSeconds(3f); // Jam time, can be exposed
-                }
-            }
-
-            DisableElectronics?.Invoke();
-
-            onCooldown = true;
-            yield return new WaitForSeconds(empCooldown);
-            onCooldown = false;
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                TriggerEMP();
-            }
-        }
-
-    }
 
 
     private void Start()

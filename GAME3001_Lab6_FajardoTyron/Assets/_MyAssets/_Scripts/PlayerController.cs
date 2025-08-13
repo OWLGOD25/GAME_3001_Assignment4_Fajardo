@@ -1,15 +1,17 @@
 using TMPro;
 using UnityEngine;
 using static ProjectileAbility;
+using static EMPAbility;
+using static ShieldAbility;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("ShieldAbility")]
-    [SerializeField] private GameObject shieldPrefab; 
+    [SerializeField] public GameObject shieldPrefab;
     public float shieldDuration = 3f;
     public float shieldCooldown = 5f;
-    private bool shieldActive = false;
-    private bool shieldOnCooldown = false;
+    public bool shieldActive = false;
+    public bool shieldOnCooldown = false;
 
 
     [Header("Movement Fields")]
@@ -29,19 +31,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject empEffectPrefab;
     public float empRadius = 5f;
     public float empCooldown = 10f;
-    
 
+    private ShieldAbility sa;
     private MovementAbility ma;
     private DetectAbility da;
     private ProjectileAbility pa;
     private EMPAbility ea;
 
-    private void Start()    
+    private void Start()
     {
+
+        // Initialize the abilities
+        sa = gameObject.AddComponent<ShieldAbility>();
+        sa.shieldPrefab = shieldPrefab;
+        sa.shieldDuration = shieldDuration;
+        sa.shieldCooldown = shieldCooldown;
+     
+      
+
         ea = gameObject.AddComponent<EMPAbility>();
         ea.empRadius = empRadius;
         ea.empCooldown = empCooldown;
-        ea.empEffectPrefab = empEffectPrefab;
+        ea.empEffectPrefab = empEffectPrefab; 
         ea.DisableElectronics = () => { ea.TriggerEMP(); };
 
         ma = gameObject.AddComponent<MovementAbility>();
@@ -56,5 +67,18 @@ public class PlayerController : MonoBehaviour
         pa.maxAmmo = maxAmmo;
         pa.fireDelay = fireDelay;
         pa.reloadTime = reloadTime;
+    }
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E) && !shieldOnCooldown)
+        {
+            StartCoroutine(sa.ActivateShield());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            StartCoroutine(ea.TriggerEMP());
+        }
+
     }
 }

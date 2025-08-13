@@ -17,7 +17,9 @@ public class SmartMissile : AgentObject
     [Header("Misc. Fields")]
     [SerializeField] private float attackRange;
 
-   
+    public int hitPoints = 3; // Change for each enemy type
+    public GameObject explosionPrefab;
+    public AudioClip explosionSound;
     private bool active = true; // If the missile is active.
     public bool IsActive => active;
     private Rigidbody2D rb;
@@ -159,5 +161,16 @@ public class SmartMissile : AgentObject
         TreeNode attackNode = dt.AddNode(dt.CloseCombatNode, new AttackAction(), TreeNodeType.RIGHT_TREE_NODE);
         ((ActionNode)attackNode).Agent = dt.Agent;
         dt.treeNodeList.Add(attackNode);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        hitPoints -= damage;
+        if (hitPoints <= 0)
+        {
+            if (explosionPrefab) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            if (explosionSound) AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+            Destroy(gameObject);
+        }
     }
 }
