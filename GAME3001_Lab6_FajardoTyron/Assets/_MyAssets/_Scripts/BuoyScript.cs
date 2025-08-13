@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BuoyScript : MonoBehaviour
@@ -18,6 +19,10 @@ public class BuoyScript : MonoBehaviour
     public int hitPoints = 3; // Change for each enemy type
     public GameObject explosionPrefab;
     public AudioClip explosionSound;
+    public float empDisableDuration = 3f; // How long the enemy is frozen
+    private bool isDisabled = true;
+    private bool playWarning = false; // Used to control the warning sound.
+
     private bool isDetecting = false;
     private bool canLaunch = true;
     private float dist; // Holds result of distance check.
@@ -30,11 +35,31 @@ public class BuoyScript : MonoBehaviour
 
     void Update()
     {
+        if (isDisabled)
+        {
+            if (!playWarning)
+            {
+                PlayWarning();
+                playWarning = true;
+            }
+            return;
+        }
+        if (playWarning)
+        {
+            PlayWarning();
+            playWarning = false;
+        }
+
+
+        
+   
+
+
         dist = Vector3.Distance(target.transform.position, transform.position);
         if (!isDetecting && dist < detectionRange)
         { // Starts the Warning sequence.
             isDetecting = true;
-            PlayWarning();
+            
         }
         if (isDetecting && dist > detectionRange)
         {
@@ -68,10 +93,24 @@ public class BuoyScript : MonoBehaviour
         hitPoints -= damage;
         if (hitPoints <= 0)
         {
-            if (explosionPrefab) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            if (explosionSound) AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+
             Destroy(gameObject);
         }
     }
+    public void ApplyEMP(float duration)
+    {
+        if (!isDisabled)
+            StartCoroutine(EMPDisableCoroutine(duration));
+    }
 
+    private IEnumerator EMPDisableCoroutine(float duration)
+    {
+        isDisabled = true;
+
+        // Optional: visual/audio effect for EMP hit
+        yield return new WaitForSeconds(duration);
+
+        isDisabled = false;
+    }
 }
+  

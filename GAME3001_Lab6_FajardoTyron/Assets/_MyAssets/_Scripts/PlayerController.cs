@@ -6,6 +6,7 @@ using static ShieldAbility;
 
 public class PlayerController : MonoBehaviour
 {
+
     [Header("ShieldAbility")]
     [SerializeField] public GameObject shieldPrefab;
     public float shieldDuration = 3f;
@@ -79,6 +80,5 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(ea.TriggerEMP());
         }
-
     }
 }

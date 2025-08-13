@@ -87,6 +87,7 @@
     <Compile Include="Assets\_MyAssets\_Scripts\Old Pathfinding\PathManager.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\DecisionTree\Actions\AttackAction.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\EnemyBaseScript.cs" />
+    <Compile Include="Assets\_MyAssets\_Scripts\InterfaceScript.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\AgentMovement.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\DecisionTree\Conditions\LOSCondition.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\SceneLoader.cs" />

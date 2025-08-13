@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using static InterfaceScript;
 public abstract class AbilityBehaviour : MonoBehaviour
 {
 
@@ -47,45 +48,40 @@ public class EMPAbility : AbilityBehaviour
     public float empDuration = 3f; // Duration for which electronics are disabled
     public GameObject empEffectPrefab;
 
-    private bool onCooldown = false;
+    private bool onCooldown = true;
 
     public System.Action DisableElectronics;
 
-    public string TriggerEMP()
+    public IEnumerator TriggerEMP()
     {
-        if (onCooldown)
-            StartCoroutine(DoEMP());
-
-        return "EMP Triggered";
+        if (!onCooldown)
+            yield return StartCoroutine(DoEMP());
+        Debug.Log("EMP Triggered");
     }
 
     private IEnumerator DoEMP()
     {
-        // Show EMP effect
+        onCooldown = true;
+        // Spawn EMP visual effect
         if (empEffectPrefab != null)
             Instantiate(empEffectPrefab, transform.position, Quaternion.identity);
 
-        // Disable detectors within radius
+        // Find all objects in radius
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, empRadius);
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("EnemyDetector"))
+            IEMPable empable = hit.GetComponent<IEMPable>();
+            if (empable != null)
             {
-                var detector = hit.GetComponent<EnemyDetector>();
-                if (detector != null)
-                    detector.DisableForSeconds(3f); // Jam time, can be exposed
+                empable.ApplyEMP(empDuration);
             }
-
         }
-
-        DisableElectronics?.Invoke();
-
-        onCooldown = true;
         yield return new WaitForSeconds(empCooldown);
         onCooldown = false;
-
     }
+
 }
+
 
 public class MovementAbility : AbilityBehaviour
 {
@@ -196,11 +192,10 @@ public class ProjectileAbility : AbilityBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        IDamageable damageable = collision.GetComponent<IDamageable>();
+        if (damageable != null)
         {
-            collision.GetComponent<SmartMissile>()?.TakeDamage(1);
-            collision.GetComponent<BuoyScript>()?.TakeDamage(1);
-            collision.GetComponent<EnemyBaseScript>()?.TakeDamage(1);
+            damageable.TakeDamage(1);
             Destroy(gameObject);
         }
     }

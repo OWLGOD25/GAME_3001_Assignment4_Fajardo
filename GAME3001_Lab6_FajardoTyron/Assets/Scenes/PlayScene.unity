@@ -1780,6 +1780,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1146825768}
     - target: {fileID: 49454076538602713, guid: 95e4665433df7d7488ead393a3771a18, type: 3}
+      propertyPath: empRadius
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 49454076538602713, guid: 95e4665433df7d7488ead393a3771a18, type: 3}
       propertyPath: fireDelay
       value: 1
       objectReference: {fileID: 0}
@@ -1793,6 +1797,10 @@ PrefabInstance:
       objectReference: {fileID: 4595957}
     - target: {fileID: 49454076538602713, guid: 95e4665433df7d7488ead393a3771a18, type: 3}
       propertyPath: detectReset
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 49454076538602713, guid: 95e4665433df7d7488ead393a3771a18, type: 3}
+      propertyPath: empCooldown
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 49454076538602713, guid: 95e4665433df7d7488ead393a3771a18, type: 3}

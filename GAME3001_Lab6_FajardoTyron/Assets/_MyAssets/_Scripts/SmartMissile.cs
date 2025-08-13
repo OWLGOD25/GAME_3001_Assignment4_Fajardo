@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class SmartMissile : AgentObject
@@ -17,6 +18,8 @@ public class SmartMissile : AgentObject
     [Header("Misc. Fields")]
     [SerializeField] private float attackRange;
 
+    public float empDisableDuration = 3f;
+    private bool isDisabled = false;
     public int hitPoints = 3; // Change for each enemy type
     public GameObject explosionPrefab;
     public AudioClip explosionSound;
@@ -40,6 +43,11 @@ public class SmartMissile : AgentObject
 
     void Update()
     {
+        if (isDisabled)
+        {
+            this.gameObject.SetActive(false);
+            return;
+        }
         // Set the CloseCombatCondition on the tree.
         dt.CloseCombatNode.IsWithinRange = Vector3.Distance(TargetPosition, transform.position) <= attackRange;
 
@@ -168,9 +176,25 @@ public class SmartMissile : AgentObject
         hitPoints -= damage;
         if (hitPoints <= 0)
         {
-            if (explosionPrefab) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            if (explosionSound) AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+
             Destroy(gameObject);
         }
     }
-}
+   
+    public void ApplyEMP(float duration)
+    {
+        if (!isDisabled)
+            StartCoroutine(EMPDisableCoroutine(duration));
+    }
+
+    private IEnumerator EMPDisableCoroutine(float duration)
+    {
+        isDisabled = true;
+        // Optional: visual/sound effects
+        yield return new WaitForSeconds(duration);
+        isDisabled = false;
+    }
+
+ }
+
+    
