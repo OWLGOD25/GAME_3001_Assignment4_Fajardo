@@ -17,6 +17,9 @@ public class SmartMissile : AgentObject
     [Header("Misc. Fields")]
     [SerializeField] private float attackRange;
 
+   
+    private bool active = true; // If the missile is active.
+    public bool IsActive => active;
     private Rigidbody2D rb;
     private DecisionTree dt;
 
@@ -37,7 +40,7 @@ public class SmartMissile : AgentObject
     {
         // Set the CloseCombatCondition on the tree.
         dt.CloseCombatNode.IsWithinRange = Vector3.Distance(TargetPosition, transform.position) <= attackRange;
-        
+
         // Make Decision and parse the state.
         dt.MakeDecision();
 
@@ -75,6 +78,13 @@ public class SmartMissile : AgentObject
         }
     }
 
+    public void DisableElectronics()
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        this.enabled = false; // Disable this script.
+        Debug.Log("EMP Pulse");
+    }
     private void RotateCounterClockwise()
     {
         // Rotate counterclockwise based on rotationSpeed and a weight.

@@ -15,6 +15,9 @@ public class BuoyScript : MonoBehaviour
     [Header("Misc. Fields")]
     [SerializeField] private float missileCooldown = 3f;
 
+    public int hitPoints = 3; // Change for each enemy type
+    public GameObject explosionPrefab;
+    public AudioClip explosionSound;
     private bool isDetecting = false;
     private bool canLaunch = true;
     private float dist; // Holds result of distance check.
@@ -60,4 +63,15 @@ public class BuoyScript : MonoBehaviour
     {
         canLaunch = true;
     }
+    public void TakeDamage(int damage)
+    {
+        hitPoints -= damage;
+        if (hitPoints <= 0)
+        {
+            if (explosionPrefab) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            if (explosionSound) AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+            Destroy(gameObject);
+        }
+    }
+
 }

@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{75E0C754-1634-C0CA-4990-7ADB65B3DCE8}</ProjectGuid>
+    <ProjectGuid>{6FE55B8E-4504-139A-1003-EADF9F22A997}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -65,7 +65,6 @@
     <Compile Include="Assets\_MyAssets\_Scripts\SmartMissile.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\Old Pathfinding\ClickDragScript.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\Old Pathfinding\TilePanelScript.cs" />
-    <Compile Include="Assets\animation.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\Game.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\DecisionTree\DecisionTree.cs" />
     <Compile Include="Assets\_MyAssets\_Scripts\PlayerController.cs" />

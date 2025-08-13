@@ -15,6 +15,10 @@ public class AgentObject : MonoBehaviour
 {
     [SerializeField] protected Transform m_target = null;
 
+    public int hitPoints = 3; // Change for each enemy type
+    public GameObject explosionPrefab;
+    public AudioClip explosionSound;
+
     public ActionState state { get; set; }
     public Vector3 TargetPosition
     {
@@ -47,5 +51,34 @@ public class AgentObject : MonoBehaviour
             return true;
         }
         return false;
+    }
+    public void TakeDamage(int damage)
+    {
+
+        hitPoints -= damage;
+        if (hitPoints <= 0)
+        {
+            if (explosionPrefab) Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            if (explosionSound) AudioSource.PlayClipAtPoint(explosionSound, transform.position);
+            Destroy(gameObject);
+        }
+    }
+}
+public class EnemyDetector : MonoBehaviour
+{
+    private bool active = true;
+
+    public bool IsActive => active;
+
+    public void DisableForSeconds(float seconds)
+    {
+        StartCoroutine(DisableTemporarily(seconds));
+    }
+
+    private IEnumerator DisableTemporarily(float seconds)
+    {
+        active = false;
+        yield return new WaitForSeconds(seconds);
+        active = true;
     }
 }

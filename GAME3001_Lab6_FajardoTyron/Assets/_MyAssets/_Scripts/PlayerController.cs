@@ -1,8 +1,17 @@
 using TMPro;
 using UnityEngine;
+using static ProjectileAbility;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("ShieldAbility")]
+    [SerializeField] private GameObject shieldPrefab; 
+    public float shieldDuration = 3f;
+    public float shieldCooldown = 5f;
+    private bool shieldActive = false;
+    private bool shieldOnCooldown = false;
+
+
     [Header("Movement Fields")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotationSpeed;
@@ -16,12 +25,25 @@ public class PlayerController : MonoBehaviour
     public float fireDelay;
     public float reloadTime;
 
+    [Header("EMP Fields")]
+    [SerializeField] private GameObject empEffectPrefab;
+    public float empRadius = 5f;
+    public float empCooldown = 10f;
+    
+
     private MovementAbility ma;
     private DetectAbility da;
     private ProjectileAbility pa;
+    private EMPAbility ea;
 
-    private void Start()
+    private void Start()    
     {
+        ea = gameObject.AddComponent<EMPAbility>();
+        ea.empRadius = empRadius;
+        ea.empCooldown = empCooldown;
+        ea.empEffectPrefab = empEffectPrefab;
+        ea.DisableElectronics = () => { ea.TriggerEMP(); };
+
         ma = gameObject.AddComponent<MovementAbility>();
         ma.moveSpeed = moveSpeed;
         ma.rotationSpeed = rotationSpeed;

@@ -1,6 +1,6 @@
 using TMPro;
 using UnityEngine;
-
+using System.Collections;
 public abstract class AbilityBehaviour : MonoBehaviour
 {
     
@@ -63,7 +63,7 @@ public class DetectAbility : AbilityBehaviour
 }
 
 public class ProjectileAbility : AbilityBehaviour
-{ 
+{
     [Header("Projectile Fields")]
     public GameObject torpedoPrefab;
     public int maxAmmo;
@@ -73,6 +73,97 @@ public class ProjectileAbility : AbilityBehaviour
     private TMP_Text ammoLabel;
     private int ammo;
     private bool canFire;
+
+
+    public class ShieldAbility : AbilityBehaviour
+    {
+        [Header("ShieldAbility")]
+        public GameObject shieldPrefab;
+        public float shieldDuration = 3f;
+        public float shieldCooldown = 5f;
+        private bool shieldActive = false;
+        private bool shieldOnCooldown = false;
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.E) && !shieldOnCooldown)
+            {
+                ActivateShield();
+            }
+        }
+        private void ActivateShield()
+        {
+            if (!shieldActive)
+            {
+                Instantiate(shieldPrefab, transform.position, Quaternion.identity, transform);
+                shieldActive = true;
+                Invoke("DeactivateShield", shieldDuration);
+                shieldOnCooldown = true;
+                Invoke("ResetShieldCooldown", shieldCooldown);
+            }
+        }
+        private void DeactivateShield()
+        {
+            shieldActive = false;
+            // Additional logic to remove the shield visual can be added here.
+        }
+        private void ResetShieldCooldown()
+        {
+            shieldOnCooldown = false;
+        }
+    }
+
+    public class EMPAbility : MonoBehaviour
+    {
+        public float empRadius = 5f;
+        public float empCooldown = 10f;
+        public GameObject empEffectPrefab;
+
+        private bool onCooldown = false;
+
+        public System.Action DisableElectronics;
+
+        public void TriggerEMP()
+        {
+            if (onCooldown) return;
+            StartCoroutine(DoEMP());
+        }
+
+        private IEnumerator DoEMP()
+        {
+            // Show EMP effect
+            if (empEffectPrefab != null)
+                Instantiate(empEffectPrefab, transform.position, Quaternion.identity);
+
+            // Disable detectors within radius
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, empRadius);
+            foreach (var hit in hits)
+            {
+                if (hit.CompareTag("EnemyDetector"))
+                {
+                    var detector = hit.GetComponent<EnemyDetector>();
+                    if (detector != null)
+                        detector.DisableForSeconds(3f); // Jam time, can be exposed
+                }
+            }
+
+            DisableElectronics?.Invoke();
+
+            onCooldown = true;
+            yield return new WaitForSeconds(empCooldown);
+            onCooldown = false;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                TriggerEMP();
+            }
+        }
+
+    }
+
+
     private void Start()
     {
         ammoLabel = GameObject.Find("Ammo Label").GetComponent<TMP_Text>();
@@ -107,5 +198,16 @@ public class ProjectileAbility : AbilityBehaviour
     private void FireCooldown()
     {
         canFire = true;
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+        {
+            collision.GetComponent<SmartMissile>()?.TakeDamage(1);
+            collision.GetComponent<BuoyScript>()?.TakeDamage(1);
+            collision.GetComponent<EnemyBaseScript>()?.TakeDamage(1);
+            Destroy(gameObject);
+        }
     }
 }

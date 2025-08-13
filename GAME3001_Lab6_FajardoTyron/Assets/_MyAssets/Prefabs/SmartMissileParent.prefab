@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3741876102686405304}
   - component: {fileID: 6280236842707858558}
   - component: {fileID: 4602518730209127319}
-  - component: {fileID: 751154462707427830}
   m_Layer: 2
   m_Name: SmartMissileParent
   m_TagString: Untagged
@@ -27,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4903476490326962842}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.70710576, w: 0.70710784}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 5, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -108,26 +107,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.2, y: 0.5}
   m_EdgeRadius: 0
---- !u!114 &751154462707427830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4903476490326962842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49ceb154b16c4f1419df128cda556de3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_target: {fileID: 0}
-  movementSpeed: 1
-  rotationSpeed: 90
-  rotationSnapThreshold: 1
-  whiskerLength: 3
-  whiskerAngle: 30
-  avoidanceWeight: 1.5
-  attackRange: 1
 --- !u!1 &5568941638821576199
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,13 +132,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5568941638821576199}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.7118122, w: 0.7023699}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3741876102686405304}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90.765}
 --- !u!212 &5818444235176623970
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -204,7 +183,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 1788300813431222268, guid: 8567e6b0da93e3641b79d3a6fd340c42, type: 3}
+  m_Sprite: {fileID: -1540426309290004842, guid: 76a68a8efa45aa04f8c83b83bdfd776f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
