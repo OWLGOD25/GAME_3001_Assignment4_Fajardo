@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using static InterfaceScript; // Assuming this is where IDamageable is defined
+
 public class EnemyBaseScript : MonoBehaviour
 {
+    
     public int hitPoints = 3; // Change for each enemy type
     public GameObject explosionPrefab;
     public AudioClip explosionSound;
@@ -34,6 +37,7 @@ public class EnemyBaseScript : MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
+        IDamageable damageable = GetComponent<IDamageable>();
         hitPoints -= damage;
         if (hitPoints <= 0)
         {
