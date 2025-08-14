@@ -38,7 +38,8 @@ public class EnemyBaseScript : MonoBehaviour
     public void TakeDamage(int damage)
     {
         IDamageable damageable = GetComponent<IDamageable>();
-        hitPoints -= damage;
+        hitPoints -= damage; 
+        Debug.Log($"Enemy hit points: {hitPoints}");
         if (hitPoints <= 0)
         {
 
@@ -59,5 +60,14 @@ public class EnemyBaseScript : MonoBehaviour
         yield return new WaitForSeconds(duration);
 
         isDisabled = false;
+    }
+    private void OnCollision2D(Collider2D other)
+    {
+        TakeDamage(1); // Assuming 1 damage per hit, adjust as needed
+        IDamageable damageable = other.GetComponent<IDamageable>();
+        if (damageable != null)
+        {
+            damageable.TakeDamage(1);
+        }
     }
 }
